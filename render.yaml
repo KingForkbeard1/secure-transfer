@@ -1,0 +1,18 @@
+# Render Blueprint: one web service serves the API and the built front end.
+services:
+  - type: web
+    name: secure-transfer
+    runtime: node
+    plan: free            # With DATABASE_URL set, data lives in MySQL and survives sleeping and redeploys.
+    buildCommand: npm install --include=dev && npm run build
+    startCommand: npm run start -w server
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: 22.20.0
+      - key: TRUST_PROXY
+        value: "1"
+      - key: DATABASE_SSL
+        value: "1"
+      - key: DATABASE_URL   # paste your MySQL connection string in Render's dashboard (never in this file)
+        sync: false
